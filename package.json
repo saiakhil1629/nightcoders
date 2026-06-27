@@ -1,0 +1,20 @@
+{
+  "name": "code2career-lms",
+  "version": "1.0.0",
+  "description": "Code2Career Academy LMS - Get Job-Ready in 90 Days",
+  "main": "index.js",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "install:all": "npm install && npm install --prefix backend && npm install --prefix frontend",
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "start:backend": "npm start --prefix backend",
+    "start:frontend": "npm run dev --prefix frontend"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
