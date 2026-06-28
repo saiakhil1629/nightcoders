@@ -373,29 +373,41 @@ const Dashboard = () => {
                     {/* Aptitude Part */}
                     <div className="space-y-3">
                       <h5 className="text-xs font-bold uppercase tracking-wider text-accent-xp">Part A: Aptitude</h5>
-                      <p className="text-xs text-text-primary leading-relaxed min-h-[36px]">{task.aptitudeQuestion?.question}</p>
+                      <p className="text-xs text-text-primary leading-relaxed min-h-[36px]">
+                        {typeof task.aptitudeQuestion === 'string' ? task.aptitudeQuestion : task.aptitudeQuestion?.question}
+                      </p>
                       
                       {completion?.aptitudeSolved ? (
                         <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-xl text-green-400 text-xs font-semibold">
-                          ✅ Correct! {task.aptitudeQuestion?.explanation}
+                          ✅ Correct! {typeof task.aptitudeQuestion === 'object' && task.aptitudeQuestion?.explanation}
                         </div>
                       ) : (
-                        <form onSubmit={handleAptitudeSubmit} className="space-y-3">
-                          <div className="space-y-2">
-                            {task.aptitudeQuestion?.options.map((opt, idx) => (
-                              <label key={idx} className="flex items-center gap-2 text-xs text-text-secondary hover:text-white cursor-pointer bg-white/5 border border-white/5 px-3 py-2 rounded-lg">
-                                <input
-                                  type="radio"
-                                  name="aptitude"
-                                  value={idx}
-                                  checked={parseInt(aptitudeAnswer) === idx}
-                                  onChange={(e) => setAptitudeAnswer(e.target.value)}
-                                  className="accent-accent-primary"
-                                />
-                                {opt}
-                              </label>
-                            ))}
-                          </div>
+                        <form onSubmit={(e) => {
+                          e.preventDefault();
+                          if (typeof task.aptitudeQuestion === 'string') {
+                            setAptitudeResult('Correct');
+                            handleCompleteComponent('aptitude');
+                          } else {
+                            handleAptitudeSubmit(e);
+                          }
+                        }} className="space-y-3">
+                          {typeof task.aptitudeQuestion === 'object' && task.aptitudeQuestion?.options && (
+                            <div className="space-y-2">
+                              {task.aptitudeQuestion.options.map((opt, idx) => (
+                                <label key={idx} className="flex items-center gap-2 text-xs text-text-secondary hover:text-white cursor-pointer bg-white/5 border border-white/5 px-3 py-2 rounded-lg">
+                                  <input
+                                    type="radio"
+                                    name="aptitude"
+                                    value={idx}
+                                    checked={parseInt(aptitudeAnswer) === idx}
+                                    onChange={(e) => setAptitudeAnswer(e.target.value)}
+                                    className="accent-accent-primary"
+                                  />
+                                  {opt}
+                                </label>
+                              ))}
+                            </div>
+                          )}
                           <button type="submit" className="w-full py-2 bg-white/10 hover:bg-white/20 text-xs font-bold rounded-lg transition-all">
                             Submit Aptitude
                           </button>
@@ -407,29 +419,41 @@ const Dashboard = () => {
                     {/* Reasoning Part */}
                     <div className="space-y-3">
                       <h5 className="text-xs font-bold uppercase tracking-wider text-accent-xp">Part B: Logical Reasoning</h5>
-                      <p className="text-xs text-text-primary leading-relaxed min-h-[36px]">{task.reasoningQuestion?.question}</p>
+                      <p className="text-xs text-text-primary leading-relaxed min-h-[36px]">
+                        {typeof task.reasoningQuestion === 'string' ? task.reasoningQuestion : task.reasoningQuestion?.question}
+                      </p>
 
                       {completion?.reasoningSolved ? (
                         <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-xl text-green-400 text-xs font-semibold">
-                          ✅ Correct! {task.reasoningQuestion?.explanation}
+                          ✅ Correct! {typeof task.reasoningQuestion === 'object' && task.reasoningQuestion?.explanation}
                         </div>
                       ) : (
-                        <form onSubmit={handleReasoningSubmit} className="space-y-3">
-                          <div className="space-y-2">
-                            {task.reasoningQuestion?.options.map((opt, idx) => (
-                              <label key={idx} className="flex items-center gap-2 text-xs text-text-secondary hover:text-white cursor-pointer bg-white/5 border border-white/5 px-3 py-2 rounded-lg">
-                                <input
-                                  type="radio"
-                                  name="reasoning"
-                                  value={idx}
-                                  checked={parseInt(reasoningAnswer) === idx}
-                                  onChange={(e) => setReasoningAnswer(e.target.value)}
-                                  className="accent-accent-primary"
-                                />
-                                {opt}
-                              </label>
-                            ))}
-                          </div>
+                        <form onSubmit={(e) => {
+                          e.preventDefault();
+                          if (typeof task.reasoningQuestion === 'string') {
+                            setReasoningResult('Correct');
+                            handleCompleteComponent('reasoning');
+                          } else {
+                            handleReasoningSubmit(e);
+                          }
+                        }} className="space-y-3">
+                          {typeof task.reasoningQuestion === 'object' && task.reasoningQuestion?.options && (
+                            <div className="space-y-2">
+                              {task.reasoningQuestion.options.map((opt, idx) => (
+                                <label key={idx} className="flex items-center gap-2 text-xs text-text-secondary hover:text-white cursor-pointer bg-white/5 border border-white/5 px-3 py-2 rounded-lg">
+                                  <input
+                                    type="radio"
+                                    name="reasoning"
+                                    value={idx}
+                                    checked={parseInt(reasoningAnswer) === idx}
+                                    onChange={(e) => setReasoningAnswer(e.target.value)}
+                                    className="accent-accent-primary"
+                                  />
+                                  {opt}
+                                </label>
+                              ))}
+                            </div>
+                          )}
                           <button type="submit" className="w-full py-2 bg-white/10 hover:bg-white/20 text-xs font-bold rounded-lg transition-all">
                             Submit Reasoning
                           </button>
