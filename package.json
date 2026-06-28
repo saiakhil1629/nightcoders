@@ -2,6 +2,7 @@
   "name": "code2career-lms",
   "version": "1.0.0",
   "description": "Code2Career Academy LMS - Get Job-Ready in 90 Days",
+  "type": "module",
   "main": "index.js",
   "workspaces": [
     "backend",
