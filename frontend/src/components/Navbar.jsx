@@ -88,6 +88,12 @@ const Navbar = () => {
               >
                 Analytics
               </Link>
+              <Link 
+                to="/admin/curriculum" 
+                className={`px-4 py-2 rounded-xl transition-all ${isActive('/admin/curriculum') ? 'bg-white/10 text-white border border-white/5' : 'text-text-secondary hover:text-white hover:bg-white/5'}`}
+              >
+                Manage Curriculum
+              </Link>
             </>
           )}
         </div>

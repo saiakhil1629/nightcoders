@@ -104,3 +104,89 @@ export const getStudentsList = async (req, res) => {
   }
 };
 
+// @desc    Get all daily tasks for curriculum builder
+// @route   GET /api/admin/tasks
+// @access  Private/Admin
+export const getAllAdminTasks = async (req, res) => {
+  try {
+    const { data: tasks, error } = await supabase
+      .from('daily_tasks')
+      .select('*')
+      .order('day_number', { ascending: true });
+
+    if (error) throw error;
+
+    res.status(200).json({ success: true, data: tasks });
+  } catch (error) {
+    console.error('Get Admin Tasks Error:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+};
+
+// @desc    Create or Update a daily task
+// @route   POST /api/admin/tasks
+// @access  Private/Admin
+export const createOrUpdateTask = async (req, res) => {
+  try {
+    const { 
+      day_number, 
+      study_topic, 
+      video_url, 
+      video_duration, 
+      notes_url, 
+      coding_question, 
+      aptitude_question, 
+      reasoning_question, 
+      ai_tool_task 
+    } = req.body;
+
+    if (!day_number || !study_topic) {
+      return res.status(400).json({ success: false, message: 'Day Number and Study Topic are required' });
+    }
+
+    // Check if task exists for this day
+    const { data: existing } = await supabase
+      .from('daily_tasks')
+      .select('id')
+      .eq('day_number', day_number)
+      .maybeSingle();
+
+    const taskData = {
+      day_number,
+      study_topic,
+      video_url: video_url || '',
+      video_duration: video_duration || 0,
+      notes_url: notes_url || '',
+      coding_question: coding_question || null,
+      aptitude_question: aptitude_question || null,
+      reasoning_question: reasoning_question || null,
+      ai_tool_task: ai_tool_task || null,
+      updated_at: new Date().toISOString()
+    };
+
+    let result;
+    if (existing) {
+      const { data, error } = await supabase
+        .from('daily_tasks')
+        .update(taskData)
+        .eq('id', existing.id)
+        .select()
+        .single();
+      if (error) throw error;
+      result = data;
+    } else {
+      const { data, error } = await supabase
+        .from('daily_tasks')
+        .insert([taskData])
+        .select()
+        .single();
+      if (error) throw error;
+      result = data;
+    }
+
+    res.status(200).json({ success: true, message: 'Task saved successfully', data: result });
+  } catch (error) {
+    console.error('Create/Update Task Error:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+};

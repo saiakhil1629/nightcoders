@@ -1,17 +1,45 @@
+import dotenv from 'dotenv';
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(
-  'https://qjttpookjdfbphqcbtyr.supabase.co',
-  'sb_publishable__lhPKxuS-Aryn1s9kdPDeQ_TDg0J7zo'
-);
+dotenv.config();
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_ANON_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-async function test() {
-  try {
-    const { data, error } = await supabase.from('users').select('*').limit(1);
-    console.log("Data:", data);
-    console.log("Error:", error);
-  } catch (err) {
-    console.error("Crash:", err);
+async function testInsert() {
+  const profileData = {
+    college: 'Test College',
+    branch: 'CS',
+    gradYear: 2026,
+    bio: '',
+    skills: [],
+    githubUrl: '',
+    linkedinUrl: '',
+    portfolioUrl: '',
+    resumeUrl: ''
+  };
+
+  const { error } = await supabase.from('users').insert([{
+    name: 'Test User',
+    email: 'test5@test.com',
+    password: 'hashedpassword',
+    role: 'Student',
+    status: 'Pending',
+    profile: profileData,
+    xp: 0,
+    level: 1,
+    streak: 0,
+    badges: [],
+    job_ready_score: 0,
+    coding_questions_solved: 0,
+    hours_studied: 0,
+    attendance_count: 0
+  }]);
+
+  if (error) {
+    console.error("Supabase Error:", JSON.stringify(error, null, 2));
+  } else {
+    console.log("Insert successful!");
   }
 }
-test();
+testInsert();

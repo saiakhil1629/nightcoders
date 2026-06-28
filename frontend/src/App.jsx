@@ -17,6 +17,7 @@ import DailyTasks from './pages/DailyTasks';
 import AIHub from './pages/AIHub';
 import Profile from './pages/Profile';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import ManageTasks from './pages/admin/ManageTasks';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -92,6 +93,7 @@ const App = () => {
           {/* Admin Protected Routes */}
           <Route path="/admin/requests" element={<AdminRoute><ManageStudents /></AdminRoute>} />
           <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+          <Route path="/admin/curriculum" element={<AdminRoute><ManageTasks /></AdminRoute>} />
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/login" replace />} />
