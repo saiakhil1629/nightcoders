@@ -153,6 +153,7 @@ export const createOrUpdateTask = async (req, res) => {
 
     const taskData = {
       day_number,
+      month: Math.ceil(day_number / 30),
       study_topic,
       video_url: video_url || '',
       video_duration: video_duration || 0,
