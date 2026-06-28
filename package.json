@@ -15,7 +15,17 @@
     "start:backend": "npm start --prefix backend",
     "start:frontend": "npm run dev --prefix frontend"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@supabase/supabase-js": "^2.108.2",
+    "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.2.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "socket.io": "^4.7.5"
+  },
   "devDependencies": {
     "concurrently": "^8.2.2"
   }
