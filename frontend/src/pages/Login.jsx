@@ -36,7 +36,15 @@ const Login = () => {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await response.json();
+      const contentType = response.headers.get("content-type");
+      let data;
+      if (contentType && contentType.includes("application/json")) {
+        data = await response.json();
+      } else {
+        const errorText = await response.text();
+        console.error("Non-JSON response:", errorText);
+        throw new Error("Server connection failed. Please ensure the backend is running.");
+      }
 
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Login failed');
@@ -153,24 +161,7 @@ const Login = () => {
               </Link>
             </div>
             
-            {/* Developer Fast-pass seeds */}
-            <div className="bg-white/5 p-3 rounded-xl border border-white/5 flex items-center justify-between text-[11px] font-semibold text-text-secondary mt-2">
-              <span>Developer Shortcuts:</span>
-              <div className="flex gap-2">
-                <button 
-                  onClick={() => handleAutofill('admin')}
-                  className="px-2.5 py-1 rounded bg-accent-primary/20 border border-accent-primary/20 text-accent-primary hover:bg-accent-primary hover:text-white transition-all"
-                >
-                  Admin Pass
-                </button>
-                <button 
-                  onClick={() => handleAutofill('student')}
-                  className="px-2.5 py-1 rounded bg-accent-secondary/20 border border-accent-secondary/20 text-accent-secondary hover:bg-accent-secondary hover:text-white transition-all"
-                >
-                  Student Pass
-                </button>
-              </div>
-            </div>
+
           </div>
         </GlassCard>
       </div>
