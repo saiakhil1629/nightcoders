@@ -2,8 +2,10 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 
-// Guarantee uploads folder exists
-const uploadDir = path.join(process.cwd(), 'uploads');
+import os from 'os';
+
+// Guarantee uploads folder exists (use OS temp dir for Vercel serverless compatibility)
+const uploadDir = path.join(os.tmpdir(), 'uploads');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
