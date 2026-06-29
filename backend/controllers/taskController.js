@@ -70,6 +70,7 @@ export const getTaskByDay = async (req, res) => {
         reasoningSolved: completion.reasoning_solved,
         aiTaskSubmitted: completion.ai_task_submitted,
         aiTaskSubmissionUrl: completion.ai_task_submission_url,
+        codingSubmissionCode: completion.coding_submission_code,
         xpEarned: completion.xp_earned,
         quizScore: completion.quiz_score
       } : {
@@ -132,7 +133,7 @@ export const getTodayTask = async (req, res) => {
 // @access  Private/Student
 export const completeTaskComponent = async (req, res) => {
   try {
-    const { dayNumber, component, quizScore, submissionUrl } = req.body;
+    const { dayNumber, component, quizScore, submissionUrl, codingSubmissionCode } = req.body;
     const userId = req.user.id || req.user._id;
 
     if (!dayNumber || !component) {
@@ -167,6 +168,7 @@ export const completeTaskComponent = async (req, res) => {
         aptitude_solved: false,
         reasoning_solved: false,
         ai_task_submitted: false,
+        coding_submission_code: '',
         xp_earned: 0,
         status: 'Pending'
       };
@@ -205,6 +207,7 @@ export const completeTaskComponent = async (req, res) => {
       updates.user.hours_studied += parseFloat(((task.video_duration || 0) / 60).toFixed(1));
     } else if (component === 'coding' && !completion.coding_solved) {
       updates.completion.coding_solved = true;
+      updates.completion.coding_submission_code = codingSubmissionCode || '';
       xpGained += 40;
       updates.user.coding_questions_solved += 1;
     } else if (component === 'quiz' && !completion.quiz_solved) {
@@ -288,6 +291,7 @@ export const completeTaskComponent = async (req, res) => {
         reasoningSolved: updates.completion.reasoning_solved,
         aiTaskSubmitted: updates.completion.ai_task_submitted,
         aiTaskSubmissionUrl: updates.completion.ai_task_submission_url,
+        codingSubmissionCode: updates.completion.coding_submission_code,
         xpEarned: updates.completion.xp_earned,
         quizScore: updates.completion.quiz_score
       }

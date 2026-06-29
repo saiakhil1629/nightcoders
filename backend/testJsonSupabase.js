@@ -8,15 +8,16 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 async function testTaskInsert() {
   const taskData = {
-    day_number: 1,
-    study_topic: 'Test Topic',
+    day_number: 99,
+    month: 4,
+    study_topic: 'JSON Test',
     video_url: '',
     video_duration: 0,
     notes_url: '',
-    coding_question: '',
-    aptitude_question: '',
-    reasoning_question: '',
-    ai_tool_task: ''
+    coding_question: { title: "Test", description: "Test", difficulty: "Easy" },
+    aptitude_question: { question: "Q", options: ["A", "B", "C", "D"], correctOption: 1, explanation: "Exp" },
+    reasoning_question: null,
+    ai_tool_task: null
   };
 
   const { data, error } = await supabase
@@ -29,6 +30,9 @@ async function testTaskInsert() {
     console.error("Supabase Error:", JSON.stringify(error, null, 2));
   } else {
     console.log("Insert successful!", data);
+    
+    // cleanup
+    await supabase.from('daily_tasks').delete().eq('day_number', 99);
   }
 }
 testTaskInsert();

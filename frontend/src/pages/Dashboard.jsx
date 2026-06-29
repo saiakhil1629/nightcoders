@@ -28,6 +28,9 @@ const Dashboard = () => {
   
   const [aiUrl, setAiUrl] = useState('');
   const [aiSubmitting, setAiSubmitting] = useState(false);
+  
+  const [codingCode, setCodingCode] = useState('');
+  const [codingSubmitting, setCodingSubmitting] = useState(false);
 
   const fetchTodayData = async () => {
     setLoading(true);
@@ -55,6 +58,7 @@ const Dashboard = () => {
       setReasoningAnswer(null);
       setReasoningResult(null);
       setAiUrl('');
+      setCodingCode('');
     } catch (err) {
       console.error(err);
       setErrorMsg(err.message);
@@ -310,17 +314,29 @@ const Dashboard = () => {
                       <span className="text-[10px] text-text-muted mt-2 block font-semibold">EST. TIME: {task.videoDuration || 15} mins • +25 XP</span>
                     </div>
                   </div>
-                  <button 
-                    onClick={() => setVideoModalOpen(true)}
-                    className="self-start md:self-auto px-4 py-2.5 rounded-xl bg-accent-primary text-white text-xs font-bold hover:opacity-90 active:scale-95 transition-all flex items-center gap-1.5 shadow-glass-glow"
-                  >
-                    <Video className="w-4 h-4" /> {completion?.videoWatched ? 'Watch Again' : 'Play Video'}
-                  </button>
+                  <div className="flex flex-col gap-2 self-start md:self-auto w-full md:w-auto">
+                    <button 
+                      onClick={() => setVideoModalOpen(true)}
+                      className="px-4 py-2.5 rounded-xl bg-accent-primary text-white text-xs font-bold hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-1.5 shadow-glass-glow"
+                    >
+                      <Video className="w-4 h-4" /> {completion?.videoWatched ? 'Watch Again' : 'Play Video'}
+                    </button>
+                    {task.notesUrl && (
+                      <a 
+                        href={task.notesUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="px-4 py-2.5 rounded-xl bg-white/10 text-white text-xs font-bold hover:bg-white/20 active:scale-95 transition-all flex items-center justify-center gap-1.5"
+                      >
+                        <BookOpen className="w-4 h-4" /> Study Materials
+                      </a>
+                    )}
+                  </div>
                 </GlassCard>
 
                 {/* 2. Coding Challenge Card */}
-                <GlassCard className={`border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-4 ${completion?.codingSolved ? 'opacity-70' : ''}`}>
-                  <div className="flex items-start gap-4">
+                <GlassCard className={`border-white/5 flex flex-col md:flex-row md:items-start justify-between gap-4 ${completion?.codingSolved ? 'opacity-70' : ''}`}>
+                  <div className="flex items-start gap-4 flex-1">
                     <div className={`p-3.5 rounded-2xl bg-accent-secondary/10 text-accent-secondary border border-accent-secondary/10 ${completion?.codingSolved ? 'bg-green-500/10 text-green-500 border-green-500/20' : ''}`}>
                       {completion?.codingSolved ? <Check className="w-6 h-6" /> : <Code className="w-6 h-6" />}
                     </div>
@@ -339,16 +355,35 @@ const Dashboard = () => {
                   </div>
                   
                   {!completion?.codingSolved ? (
-                    <button 
-                      onClick={() => handleCompleteComponent('coding')}
-                      className="self-start md:self-auto px-4 py-2.5 rounded-xl bg-accent-secondary text-white text-xs font-bold hover:opacity-90 active:scale-95 transition-all flex items-center gap-1.5"
-                    >
-                      <Sparkles className="w-4 h-4" /> Submit Solved
-                    </button>
+                    <div className="w-full md:w-1/3 flex flex-col gap-2 mt-4 md:mt-0">
+                      <textarea
+                        value={codingCode}
+                        onChange={(e) => setCodingCode(e.target.value)}
+                        placeholder="Paste your solution code here..."
+                        className="w-full h-24 p-3 bg-black/40 border border-white/10 rounded-xl text-xs text-text-primary font-mono focus:outline-none focus:border-accent-secondary/50 resize-none"
+                      />
+                      <button 
+                        onClick={async () => {
+                          if (!codingCode.trim()) return alert("Please paste your solution code first!");
+                          setCodingSubmitting(true);
+                          await handleCompleteComponent('coding', { codingSubmissionCode: codingCode });
+                          setCodingSubmitting(false);
+                        }}
+                        disabled={codingSubmitting}
+                        className="w-full px-4 py-2.5 rounded-xl bg-accent-secondary text-white text-xs font-bold hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-1.5 disabled:opacity-50"
+                      >
+                        <Sparkles className="w-4 h-4" /> Submit Code
+                      </button>
+                    </div>
                   ) : (
-                    <span className="text-xs text-green-400 font-bold flex items-center gap-1">
-                      ✅ Solved & Verified
-                    </span>
+                    <div className="text-right text-xs">
+                      <span className="text-green-400 font-bold block">✅ Solved & Verified</span>
+                      {completion.codingSubmissionCode && (
+                        <p className="text-[10px] text-text-secondary mt-1 max-w-[200px] truncate inline-block text-right">
+                          Code saved successfully.
+                        </p>
+                      )}
+                    </div>
                   )}
                 </GlassCard>
 
